@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sci-Fi Door With Gateman</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* === GLOBAL STYLES === */
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-family: 'Orbitron', sans-serif;
+      color: #0ff;
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* === DOOR STYLING === */
+    .door-container {
+      position: relative;
+      width: 350px;
+      height: 570px;
+      background: #111;
+      overflow: hidden;
+      box-shadow: 0 0 20px #0ff;
+      z-index: 1;
+      transition: opacity 1.5s ease;
+      border-top-left-radius:15rem;
+      border-top-right-radius:15rem;
+    }
+
+    .door {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to bottom, #111, #333);
+      box-shadow: inset 0 0 20px #0ff;
+      transition: transform 1.5s ease-in-out;
+      z-index: 2;
+    }
+
+    .left-door {
+      left: 0;
+      border-right: 1px solid #0ff;
+       border-top-left-radius:15rem;
+    }
+
+    .right-door {
+      right: 0;
+      border-left: 1px solid #0ff;
+    }
+
+    .open .left-door {
+      transform: translateX(-100%);
+    }
+
+    .open .right-door {
+      transform: translateX(100%);
+      border-top-right-radius:15rem;
+    }
+
+    .frame-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-shadow: 0 0 50px #0ff inset;
+      pointer-events: none;
+    }
+
+    .light-flash {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, black, gray, white);
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      z-index: 3;
+    }
+
+    .light-on {
+      opacity: 1;
+    }
+
+    /* === WORLD REVEAL === */
+    .world {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+      background-size: cover;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      z-index: 0;
+    }
+
+    .world.reveal {
+      opacity: 1;
+    }
+
+    .pixel-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: #0ff;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    .world.reveal .pixel-dot {
+      opacity: 1;
+    }
+
+    /* === GATEMAN & QUESTION === */
+    .gateman {
+      position: absolute;
+      bottom: 20px;
+      width: 150px;
+      height: auto;
+      z-index: 5;
+      transition: opacity 1s ease;
+    }
+
+    .question {
+      position: absolute;
+      bottom: 100px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border: 2px solid #0ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 6;
+    }
+
+    .question input {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background: #000;
+      border: 1px solid #0ff;
+      color: #0ff;
+    }
+
+    .question button {
+      margin-top: 10px;
+      padding: 5px 15px;
+      background: #0ff;
+      border: none;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* === RULEBOOK === */
+    .rulebook {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      color: #fff;
+      z-index: 7;
+      text-align: center;
+      display: none;
+    }
+
+    .rulebook p {
+      margin-bottom: 20px;
+    }
+
+    .rulebook button {
+      padding: 10px 20px;
+      background-color: #0ff;
+      border: none;
+      color: black;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* === GIF PANEL === */
+    .gif-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 350px;
+      height: 570px;
+      background: url('https://media.giphy.com/media/l0MYu5jXpQKMdY2bG/giphy.gif') center center / cover no-repeat;
+      display: none;
+      z-index: 4;
+    }
+
+    /* === UTILITIES === */
+    .hidden {
+      display: none;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .door-container {
+        width: 90%;
+        height: 220px;
+      }
+
+      .gateman {
+        width: 100px;
+        bottom: 10px;
+      }
+
+      .question {
+        bottom: 80px;
+        padding: 10px;
+      }
+
+      .question input,
+      .question button {
+        font-size: 14px;
+        width: 80%;
+      }
+
+      .rulebook {
+        width: 90%;
+        padding: 20px;
+      }
+
+      .rulebook button {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+
+      #typewriterText {
+        text-align: center;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene">
+
+    <div class="world" id="world">
+      <div class="pixel-dot"></div>
+    </div>
+
+    <div class="door-container" id="doorContainer">
+      <div class="door left-door"></div>
+      <div class="door right-door"></div>
+      <div class="frame-glow"></div>
+      <div class="gif-container" id="gifContainer"></div>
+    </div>
+
+    <img src="gateman.png" alt="Gateman character" class="gateman" id="gateman">
+
+    <div class="question" id="questionBox">
+      <span id="typewriterText"></span>
+      <input type="text" id="nameInput" placeholder="Enter your name" class="hidden">
+      <button onclick="enterName()" class="hidden">Submit</button>
+    </div>
+
+    <div class="light-flash" id="lightFlash"></div>
+
+    <div class="rulebook" id="rulebook">
+      <p>Welcome, traveler! Here are the rules:</p>
+      <p>1. Enter the correct name.</p>
+      <p>2. The door will open after you click "OK".</p>
+      <button onclick="openDoor()">OK</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Typewriter text effect
+    document.addEventListener("DOMContentLoaded", () => {
+      const message = "Gateman: What is your name, traveler?";
+      const typeTarget = document.getElementById("typewriterText");
+      const nameInput = document.getElementById("nameInput");
+      const submitBtn = document.querySelector(".question button");
+
+      let idx = 0;
+      function type() {
+        if (idx < message.length) {
+          typeTarget.textContent += message.charAt(idx);
+          idx++;
+          setTimeout(type, 50);
+        } else {
+          nameInput.classList.remove("hidden");
+          submitBtn.classList.remove("hidden");
+        }
+      }
+
+      type();
+    });
+
+    // Handle name input
+    function enterName() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) return;
+
+      document.getElementById('gateman').style.opacity = '0';
+      document.getElementById('questionBox').classList.add('hidden');
+      document.getElementById('rulebook').style.display = 'block';
+    }
+
+    // Open the door sequence
+    function openDoor() {
+      document.getElementById('rulebook').style.display = 'none';
+      const doorContainer = document.getElementById('doorContainer');
+      const gif = document.getElementById('gifContainer');
+      const flash = document.getElementById('lightFlash');
+      const world = document.getElementById('world');
+
+      doorContainer.classList.add('open');
+
+      setTimeout(() => {
+        gif.style.display = 'block';
+      }, 1500);
+
+      setTimeout(() => {
+        gif.style.display = 'none';
+        flash.classList.add('light-on');
+
+        setTimeout(() => {
+          doorContainer.style.opacity = '0';
+          world.classList.add('reveal');
+
+          setTimeout(() => {
+            flash.classList.remove('light-on');
+          }, 2000);
+
+        }, 1500);
+      }, 6000);
+    }
+  </script>
+
+</body>
+</html>
