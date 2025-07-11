@@ -18,20 +18,20 @@
       font-family: 'Orbitron', sans-serif;
       color: #0ff;
     }
-.cover1{
-      /* background-image: url(6.jpeg); */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 2rem;
 
-}
+    .cover1 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 2rem;
+    }
+
     .scene {
       position: relative;
       width: 100%;
@@ -122,6 +122,8 @@
 
     .world.reveal {
       opacity: 1;
+      z-index: 10;
+      pointer-events: auto;
     }
 
     .pixel-dot {
@@ -143,8 +145,6 @@
 
     .gateman {
       position: absolute;
-   /*   bottom: 20px; */
-      
       height: 600px;
       z-index: 6;
       transition: opacity 1s ease;
@@ -234,13 +234,9 @@
 
       .gateman {
         height: 250px;
-      /*  bottom: 10px; */
       }
 
       .question {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         padding: 10px;
       }
 
@@ -274,20 +270,17 @@
     </div>
 
     <div class="door-container" id="doorContainer">
-        <div class="door left-door">
-          <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/left-door.jpg
-" class="cover1">
-        </div>
-  <div class="door right-door">
-    <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/right-door.jpg
-" class="cover1">
-  </div>
+      <div class="door left-door">
+        <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/left-door.jpg" class="cover1">
+      </div>
+      <div class="door right-door">
+        <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/right-door.jpg" class="cover1">
+      </div>
       <div class="frame-glow"></div>
       <div class="gif-container" id="gifContainer"></div>
     </div>
 
-    <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/gatemen.png
-" alt="Gateman character" class="gateman" id="gateman" onclick="showQuestion()">
+    <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/gatemen.png" alt="Gateman" class="gateman" id="gateman" onclick="showQuestion()">
 
     <div class="question" id="questionBox">
       <span id="typewriterText"></span>
@@ -346,6 +339,8 @@
       const gif = document.getElementById('gifContainer');
       const flash = document.getElementById('lightFlash');
       const world = document.getElementById('world');
+      const gateman = document.getElementById('gateman');
+      const questionBox = document.getElementById('questionBox');
 
       doorContainer.classList.add('open');
 
@@ -358,8 +353,12 @@
         flash.classList.add('light-on');
 
         setTimeout(() => {
-          doorContainer.style.opacity = '0';
           world.classList.add('reveal');
+          world.style.zIndex = 10;
+          world.style.pointerEvents = 'auto';
+          doorContainer.style.display = 'none';
+          questionBox.style.display = 'none';
+          gateman.style.display = 'none';
 
           setTimeout(() => {
             flash.classList.remove('light-on');
