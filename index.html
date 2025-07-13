@@ -265,7 +265,7 @@
   </style>
 </head>
 <body>
-  <div class="scene">
+<!--  <div class="scene">
     <div class="world" id="world">
       <div class="pixel-dot"></div>
     </div>
@@ -298,8 +298,8 @@
       <button onclick="openDoor()">OK</button>
     </div>
   </div>
-
-  <script>
+-->
+<!--  <script>
     function showQuestion() {
       document.getElementById("questionBox").style.display = "flex";
       const message = "Gateman: What is your name, traveler?";
@@ -388,6 +388,134 @@ function submitName() {
             };
         }
     
+  </script> -->
+
+
+
+
+  
+  <div class="scene">
+    <div class="world" id="world"><div class="pixel-dot"></div></div>
+
+    <div class="door-container" id="doorContainer">
+      <div class="door left-door">
+        <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/left-door.jpg" class="cover1">
+      </div>
+      <div class="door right-door">
+        <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/right-door.jpg" class="cover1">
+      </div>
+      <div class="frame-glow"></div>
+      <div class="gif-container" id="gifContainer"></div>
+    </div>
+
+    <img src="https://raw.githubusercontent.com/CodeCr4cker/magical-door/main/data/gatemen.png" alt="Gateman" class="gateman" id="gateman" onclick="showQuestion()">
+
+    <div class="question" id="questionBox">
+      <span id="typewriterText"></span>
+      <input type="text" id="nameInput" placeholder="Enter your name" class="hidden" onkeydown="if(event.key==='Enter') enterName()">
+      <button onclick="enterName()" class="hidden">Submit</button>
+    </div>
+
+    <div class="light-flash" id="lightFlash"></div>
+
+    <div class="rulebook" id="rulebook">
+      <p>Welcome, traveler! Here are the rules:</p>
+      <p>1. Enter the correct name.</p>
+      <p>2. The door will open after you click "OK".</p>
+      <button onclick="openDoor()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    function showQuestion() {
+      document.getElementById("questionBox").style.display = "flex";
+      const message = "Gateman: What is your name, traveler?";
+      const typeTarget = document.getElementById("typewriterText");
+      const nameInput = document.getElementById("nameInput");
+      const submitBtn = document.querySelector(".question button");
+
+      typeTarget.textContent = "";
+      nameInput.classList.add("hidden");
+      submitBtn.classList.add("hidden");
+
+      let idx = 0;
+      function type() {
+        if (idx < message.length) {
+          typeTarget.textContent += message.charAt(idx);
+          idx++;
+          setTimeout(type, 50);
+        } else {
+          nameInput.classList.remove("hidden");
+          submitBtn.classList.remove("hidden");
+        }
+      }
+      type();
+    }
+
+    function enterName() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) {
+        speakDark("You dare not reveal your name... Very well, stranger...");
+        return;
+      }
+
+      speakDark(`Welcome ${name}... Your presence has been acknowledged...`);
+
+      document.getElementById('gateman').style.opacity = '0';
+      document.getElementById('questionBox').style.display = 'none';
+      document.getElementById('rulebook').style.display = 'block';
+    }
+
+    function openDoor() {
+      document.getElementById('rulebook').style.display = 'none';
+      const doorContainer = document.getElementById('doorContainer');
+      const gif = document.getElementById('gifContainer');
+      const flash = document.getElementById('lightFlash');
+      const world = document.getElementById('world');
+
+      doorContainer.classList.add('open');
+
+      setTimeout(() => {
+        gif.style.display = 'block';
+      }, 1500);
+
+      setTimeout(() => {
+        gif.style.display = 'none';
+        flash.classList.add('light-on');
+
+        setTimeout(() => {
+          world.classList.add('reveal');
+          doorContainer.style.display = 'none';
+          document.getElementById('gateman').style.display = 'none';
+
+          setTimeout(() => {
+            flash.classList.remove('light-on');
+          }, 2000);
+        }, 1500);
+      }, 6000);
+    }
+
+    function speakDark(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        utterance.rate = 1;
+        utterance.pitch = 0.3; // lower pitch for horror effect
+        utterance.volume = 1;
+        utterance.voice = voices.find(voice => voice.name.toLowerCase().includes('male')) || voices[0];
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    window.onload = () => {
+      speakDark("You are entering in the horror world... please welcome... if you dare...");
+    };
+
+    if ('speechSynthesis' in window) {
+      speechSynthesis.onvoiceschanged = () => {
+        speakDark("You are entering in the horror world... please welcome... if you dare...");
+      };
+    }
   </script>
 </body>
 </html>
