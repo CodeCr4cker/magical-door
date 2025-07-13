@@ -285,7 +285,7 @@
 
     <div class="question" id="questionBox">
       <span id="typewriterText"></span>
-      <input type="text" id="nameInput" placeholder="Enter your name" class="hidden">
+      <input type="text" id="nameInput" id="speakerName" placeholder="Enter your name" class="hidden">
       <button onclick="enterName()" class="hidden">Submit</button>
     </div>
 
@@ -367,6 +367,27 @@
         }, 1500);
       }, 6000);
     }
+
+
+function submitName() {
+            const name = document.getElementById('speakerName').value.trim();
+            if (name) {
+                speakDark(`Welcome ${name}... Your presence has been acknowledged...`);
+            } else {
+                speakDark("You dare not reveal your name... Very well, stranger...");
+            }
+        }
+
+        window.onload = () => {
+            speakDark("You are entering in the horror world... please welcome... if you dare...");
+        };
+
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = function() {
+                speakDark("You are entering in the horror world... please welcome... if you dare...");
+            };
+        }
+    
   </script>
 </body>
 </html>
