@@ -285,7 +285,7 @@
 
     <div class="question" id="questionBox">
       <span id="typewriterText"></span>
-      <input type="text" id="nameInput" id="speakerName" placeholder="Enter your name" class="hidden">
+      <input type="text" id="nameInput" placeholder="Enter your name" class="hidden">
       <button onclick="enterName()" class="hidden">Submit</button>
     </div>
 
@@ -370,7 +370,7 @@
 
 
 function submitName() {
-            const name = document.getElementById('speakerName').value.trim();
+            const name = document.getElementById('nameInput').value.trim();
             if (name) {
                 speakDark(`Welcome ${name}... Your presence has been acknowledged...`);
             } else {
